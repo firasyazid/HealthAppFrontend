@@ -68,20 +68,6 @@ const DoctorsScreen = ({ navigation, route }) => {
     (doctor) => doctor.region === selectedRegion
   );
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent2}>
       <View style={styles.container2}>
@@ -118,6 +104,8 @@ const DoctorsScreen = ({ navigation, route }) => {
           position: "absolute",
           top: 200,
           left: 50,
+          zIndex: 1, 
+
           
         }}
       >
@@ -144,22 +132,19 @@ const DoctorsScreen = ({ navigation, route }) => {
         />
       </View>
 
-
-
-
-
       <ScrollView
   contentContainerStyle={{
       alignItems: "center",
       justifyContent: "center",
-      
-  }}
+      top: 150,
+   }}
 >
   {doctors
     .filter((doctor) => selectedRegion === null || doctor.region === selectedRegion)
     .map((doctor) => (
       <TouchableOpacity
         key={doctor._id}
+        onPress={() =>  navigation.navigate("DoctorDetails", { doctor, categoryTitre: category.titre })}
         style={{
           flex: 1,
           alignItems: "center",
@@ -243,7 +228,7 @@ const DoctorsScreen = ({ navigation, route }) => {
         <Text
           style={{
             fontFamily: "Poppins",
-            fontSize: 12,
+            fontSize: 10,
             color: "#626262",
             textAlign: "center",
             top: -80,

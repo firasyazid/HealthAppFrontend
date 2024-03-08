@@ -12,6 +12,7 @@ import Home from "./screens/HomeScreen";
 import BottomNavigator from "./screens/bottomNavigator";
 import specialite from "./screens/Specialite";
 import DoctorsScreen from "./screens/DoctorsScreen";
+import DoctorDetails from "./screens/DoctorDetails";
 
 const Stack = createStackNavigator();
 const App = () => {
@@ -39,6 +40,8 @@ const App = () => {
         <Stack.Screen name="specialite" component={specialite} />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="DoctorsScreen" component={DoctorsScreen} />
+        <Stack.Screen name="DoctorDetails" component={DoctorDetails} />
+
 
        </Stack.Navigator>
       <Toast ref={(ref) => Toast.setRef(ref)} />
