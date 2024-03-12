@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  KeyboardAvoidingView,
+  KeyboardAvoidingView,RefreshControl
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
@@ -16,6 +16,8 @@ import React, { useEffect, useState } from "react";
 const Specialite = ({ navigation }) => {
   const [categories, setCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
+
 
 
   const filteredCategories = categories.filter(category =>
@@ -26,6 +28,8 @@ const Specialite = ({ navigation }) => {
 
   const fetchData = async () => {
     try {
+      setRefreshing(true);
+          
       const response = await fetch(
         "http://192.168.100.221:3004/api/v1/speciality"
       );
@@ -34,6 +38,8 @@ const Specialite = ({ navigation }) => {
       console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error);
+    } finally {
+      setRefreshing(false);
     }
   };
 
@@ -42,7 +48,14 @@ const Specialite = ({ navigation }) => {
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollViewContent2}>
+    <ScrollView 
+    refreshControl={
+      <RefreshControl
+        refreshing={refreshing}
+        onRefresh={fetchData}
+      />
+    }
+    contentContainerStyle={styles.scrollViewContent2}>
       <View style={styles.container}>
         <SafeAreaView style={styles.container2}>
           <TouchableOpacity onPress={() => navigation.navigate("Home")}>

@@ -1,16 +1,63 @@
-import React from "react";
-import {
+ import {
   View,
   Text,
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
-  Image,ScrollView
+  Image,ScrollView,RefreshControl
 } from "react-native";
+import React, { useEffect, useState } from "react";
  
 const HomeScreen = ({ navigation }) => {
+  const [categories, setCategories] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+
+
+
+  const fetchData = async () => {
+    try {
+      setRefreshing(true);
+
+      const response = await fetch(
+        "http://192.168.100.221:3004/api/v1/speciality"
+      );
+      const data = await response.json();
+      setCategories(data);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }finally {
+      setRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+
+
+
+
+
+
+
+
+
+
+
+
   return (
-    <ScrollView contentContainerStyle={styles.scrollViewContent2}>
+    <ScrollView 
+    refreshControl={
+      <RefreshControl
+        refreshing={refreshing}
+        onRefresh={fetchData}
+        colors={['#3498db']}  
+      />
+    }
+    contentContainerStyle={styles.scrollViewContent2}>
 
     <View style={styles.container}>
       <SafeAreaView style={styles.container2}>
@@ -82,56 +129,47 @@ const HomeScreen = ({ navigation }) => {
         <Text style={styles.speci}>Spécialités</Text>
       </View>
 
-        <ScrollView horizontal={true} contentContainerStyle = {styles.scrollViewContent}   > 
+      <ScrollView horizontal={true} contentContainerStyle={styles.scrollViewContent}>
+      <View
+            style={{
+              marginTop: 20,
+              flexDirection: "row",
+              flexWrap: "wrap",
+              justifyContent: "flex-start",
+              width: "70%",
+            }}
+          >
+{categories.slice(0, 8).map(category => (
+    <TouchableOpacity
+    onPress={() => navigation.navigate("DoctorsScreen",  { category: category })}
 
+    style={{
+      height: 60,
+      width: "20%",
+      backgroundColor: "white",
+      borderRadius: 10,
+      flexDirection: "row",
+      shadowColor: "grey",
+      shadowOffset: { width: 3, height: 3 },
+      shadowOpacity: 0.5,
+      shadowRadius: 5,
+      elevation: 5,
+      padding: 10,
+      marginBottom: 20,
+      marginHorizontal: 10,
+    }}
+      key={category._id}>
+      <Image 
+       source={{
+        uri: category.icon.replace("http://localhost:3004", ""),
+      }} 
+      style={{ width: 30, height: 30, top: 5, left: 0 }}
 
-  
-<TouchableOpacity style={styles.specialitesicons}>
-<Image source={require("../assets/generaliste.png")} style={styles.im3} />
-  <Text style={styles.iconsnss}>Médecin Généraliste</Text>
- </TouchableOpacity>
-
-
- <TouchableOpacity style={styles.specialitesicons2}>
-<Image source={require("../assets/den.png")} style={styles.im4} />
-  <Text style={styles.iconsnss2}>Dentiste</Text>
-
-   
- </TouchableOpacity>
-
-
- <TouchableOpacity style={styles.specialitesicons3}>
-<Image source={require("../assets/gyn.png")} style={styles.im4} />
-  <Text style={styles.iconsnss2}>Gynécologue</Text>
- </TouchableOpacity>
-
-
- <TouchableOpacity style={styles.specialitesicons4}>
-<Image source={require("../assets/card.png")} style={styles.im4} />
-  <Text style={styles.iconsnss2}>Cardiologue</Text>
- </TouchableOpacity>
-
-
- <TouchableOpacity style={styles.specialitesicons5}>
-<Image source={require("../assets/neur.png")} style={styles.im4} />
-  <Text style={styles.iconsnss2}>Neurologue</Text>
- </TouchableOpacity>
-
- <TouchableOpacity style={styles.specialitesicons6}>
-<Image source={require("../assets/der.png")} style={styles.im4} />
-  <Text style={styles.iconsnss2}>Dermatologue</Text>
- </TouchableOpacity>
-
- <TouchableOpacity style={styles.specialitesicons7}>
-<Image source={require("../assets/psy.png")} style={styles.im4} />
-  <Text style={styles.iconsnss2}>Psychiatre</Text>
- </TouchableOpacity>
-
-
- <TouchableOpacity style={styles.specialitesicons8}>
-<Image source={require("../assets/nut.png")} style={styles.im4} />
-  <Text style={styles.iconsnss2}>Nutritionniste</Text>
- </TouchableOpacity>
+      />
+      <Text style = {styles.text2}>{category.titre}</Text>
+    </TouchableOpacity>
+  ))}
+  </View>
 </ScrollView>
     </View>
     </ScrollView>
@@ -623,5 +661,12 @@ const styles = StyleSheet.create({
         top: 0,
         left: 100,
         width: '200%',
-      }
+      },
+      text2: {
+        fontSize: 12,
+        color: "black",
+        fontFamily: "Montserrat",
+        top: 10,
+        left: 5,
+      },
 });

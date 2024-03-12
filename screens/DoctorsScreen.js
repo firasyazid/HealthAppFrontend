@@ -5,7 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
-  Image,
+  Image,RefreshControl
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import SelectDropdown from "react-native-select-dropdown";
@@ -15,6 +15,8 @@ const DoctorsScreen = ({ navigation, route }) => {
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [doctors, setDoctors] = useState([]);
   const [selectedValue, setSelectedValue] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+
 
   const { category } = route.params;
   const idc = category.id;
@@ -22,19 +24,20 @@ const DoctorsScreen = ({ navigation, route }) => {
 
   const fetchDoctors = async () => {
     try {
+      setRefreshing(true);
       const response = await fetch(
         `http://192.168.100.221:3004/api/v1/medecin/by-category/${idc}`
       );
-
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
       const data = await response.json();
       setDoctors(data);
       console.log(data);
     } catch (error) {
       console.error("Error fetching doctors:", error);
+    } finally {
+      setRefreshing(false);
     }
   };
 
@@ -69,7 +72,14 @@ const DoctorsScreen = ({ navigation, route }) => {
   );
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollViewContent2}>
+    <ScrollView 
+    refreshControl={
+      <RefreshControl
+        refreshing={refreshing}
+        onRefresh={fetchDoctors}
+      />
+    }
+    contentContainerStyle={styles.scrollViewContent2}>
       <View style={styles.container2}>
         <SafeAreaView>
           <TouchableOpacity onPress={() => navigation.navigate("Home")}>
@@ -78,7 +88,6 @@ const DoctorsScreen = ({ navigation, route }) => {
               style={{ width: 55, height: 55, left: 20, marginTop: 20 }}
             />
           </TouchableOpacity>
-
           <Text style={styles.text}>Trouvez un médecin le </Text>
           <Text style={styles.text}>plus proche de vous </Text>
 
