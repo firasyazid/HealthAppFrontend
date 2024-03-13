@@ -29,7 +29,6 @@ const Specialite = ({ navigation }) => {
   const fetchData = async () => {
     try {
       setRefreshing(true);
-          
       const response = await fetch(
         "http://192.168.100.221:3004/api/v1/speciality"
       );

@@ -225,10 +225,9 @@ const signOutAsync = async () => {
           SetUserInfo({ email: "", password: "" });
         } 
         const jsonValue = JSON.stringify(res.data.userId);
-        await AsyncStorage.setItem("Id", jsonValue);
-        await AsyncStorage.setItem('userToken', res.data.token);
-        console.log(res.data.token);
- 
+          await AsyncStorage.setItem("Id", jsonValue);
+         await AsyncStorage.setItem('userToken', res.data.token);
+
         showToast("success", "✔️ Connexion réussie");  
         navigation.navigate("BottomNavigator");
   

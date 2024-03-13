@@ -97,7 +97,9 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.texté}>Pharmacie</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.touch3}>
+        <TouchableOpacity style={styles.touch3}
+        onPress={() => navigation.navigate("Articlescreen")}
+        >
           <Image
             source={require("../assets/magazine.png")}
             style={styles.im1}

@@ -13,6 +13,7 @@ import BottomNavigator from "./screens/bottomNavigator";
 import specialite from "./screens/Specialite";
 import DoctorsScreen from "./screens/DoctorsScreen";
 import DoctorDetails from "./screens/DoctorDetails";
+import Articlescreen from "./screens/Articlescreen";
 
 const Stack = createStackNavigator();
 const App = () => {
@@ -41,6 +42,7 @@ const App = () => {
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="DoctorsScreen" component={DoctorsScreen} />
         <Stack.Screen name="DoctorDetails" component={DoctorDetails} />
+        <Stack.Screen name="Articlescreen" component={Articlescreen} />
 
 
        </Stack.Navigator>
