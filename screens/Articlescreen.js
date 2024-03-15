@@ -9,23 +9,32 @@ import {
   TouchableWithoutFeedback,RefreshControl
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Linking } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { showToast } from "../utils/toast";
-
+ 
 const Articlescreen = ({ navigation }) => {
   const [userNames, setUserNames] = useState("");
   const [categories, setCategories] = useState([]);
   const [articles, setArticles] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedArticles, setSelectedArticles] = useState([]);
 
-
+  const handleCategoryPress = (category) => {
+    setSelectedCategory(category);
+    console.log("Selected category:", category);  
+    };
+    useEffect(() => {
+      if (selectedCategory) {
+        fetchArticlesByCategory();
+      }
+    }, [selectedCategory]);
+    
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          "http://192.168.100.221:3006/api/v1/categories"
+          "http://192.168.103.71:3006/api/v1/categories"
         );
         setCategories(response.data);
       } catch (error) {
@@ -35,13 +44,11 @@ const Articlescreen = ({ navigation }) => {
     fetchCategories();
   }, []);
 
-
-
      const fetchArticles = async () => {
       try {
             setRefreshing(true);
         const response = await axios.get(
-          "http://192.168.100.221:3006/api/v1/articles"
+          "http://192.168.103.71:3006/api/v1/articles"
         );
         setArticles(response.data);
         console.log(response.data);
@@ -53,12 +60,29 @@ const Articlescreen = ({ navigation }) => {
     };
   
 
-
     useEffect(() => {
     fetchArticles();
     }, []);
 
 
+
+    const fetchArticlesByCategory = async () => {
+      try {
+            setRefreshing(true);
+        const response = await axios.get(
+          `http://192.168.103.71:3006/api/v1/articles/articlesC/${selectedCategory.id}`
+        );
+        setSelectedArticles(response.data);
+        console.log(response.data);
+       } catch (error) {
+        console.error("Error fetching articles:", error);
+      } finally {
+        setRefreshing(false);
+      }
+    };
+  
+  
+    
 
 
 
@@ -71,7 +95,7 @@ const Articlescreen = ({ navigation }) => {
         userId = userId.replace(/"/g, "");
 
         const res = await axios.get(
-          `http://192.168.100.221:3003/api/v1/users/${userId}`
+          `http://192.168.103.71:3003/api/v1/users/${userId}`
         );
 
         const fullName = res.data.fullname;
@@ -92,7 +116,7 @@ const Articlescreen = ({ navigation }) => {
         />
       }
 
-      contentContainerStyle={{ flexGrow: 1, backgroundColor: "white" }}
+      contentContainerStyle={{ backgroundColor: "white" , height: "145%"}}
              
     >
       <View style={styles.container2}>
@@ -113,54 +137,112 @@ const Articlescreen = ({ navigation }) => {
         contentContainerStyle={styles.scrollViewContentH}
       >
         {categories.map((category) => (
-          <TouchableOpacity key={category._id} style={styles.v1}>
-            <Text style={styles.cat}>{category.Categoryname}</Text>
+          <TouchableOpacity 
+          onPress={() => handleCategoryPress(category)}
+          key={category._id} style={[
+            styles.v1,
+            selectedCategory === category && styles.selectedCategory,
+          ]}
+>
+          <Text
+            style={[
+              styles.cat,
+              selectedCategory === category && styles.selectedText,
+            ]}>{category.Categoryname}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
 
       <View style={styles.Act2}>
-        <Text style={styles.textA}>Articles Populaires</Text>
+      <Text style={[styles.textA, selectedCategory && styles.selectedTextA]}>
+  {selectedCategory ? `Articles ${selectedCategory.Categoryname}` : "Articles Populaires"}
+</Text>
       </View>
 
       <View style={styles.Act}>
-  {articles.map((article) => (
-    <View key={article.id} 
+  {selectedCategory !== null ? (
+    selectedArticles.slice(0, 3).map((article) => (
+      <View
+        key={article.id}
         style={{
-            marginBottom: 30,
-            marginHorizontal: 5,
+          marginBottom: 30,
+          marginHorizontal: 5,
         }}
-    >
-      <TouchableOpacity 
-        style={{ 
+      >
+        <TouchableOpacity 
+          onPress={() => navigation.navigate("ArticlesDetails", { article })}
+
+          style={{ 
             width: 340, 
             height: 200, 
-             borderRadius: 15, 
+            borderRadius: 15, 
             shadowColor: "grey",
             shadowOffset: { width: 3, height: 3 },
             shadowOpacity: 0.5,
             shadowRadius: 5,
             elevation: 5,
+           }}
+        >
+          <Image
+            style={{
+              width: 340,
+              height: 200,
+              top: 0,
+              left: 0,
+              borderRadius: 15,
+            }}
+            source={{ uri: article.image.replace("http://localhost:3006", "")}}
+            onError={(error) => console.log("Image loading error:", error)}
+          />
+        </TouchableOpacity>        
+
+        <Text style={styles.textImage}>{article.categoryName}</Text>  
+        <Text style={styles.textTitle}>{article.title}</Text> 
+      </View>
+    ))
+  ) : (
+    articles.slice(0, 3).map((article) => (
+      <View
+        key={article.id}
+        style={{
+          marginBottom: 30,
+          marginHorizontal: 5,
         }}
       >
-        <Image
-          style={{
-            width: 340,
-            height: 200,
-            top: 0,
-            left: 0,
-            borderRadius: 15,
-          }}
-          source={{ uri: article.image.replace("http://localhost:3006", "")}}
-          onError={(error) => console.log("Image loading error:", error)}
-        />
-      </TouchableOpacity>        
+        <TouchableOpacity 
+         onPress={() => navigation.navigate("ArticlesDetails", { article })}
 
-      <Text style={styles.textImage}>{article.categoryName}</Text>  
-      <Text style={styles.textTitle}>{article.title}</Text> 
-    </View>
-  ))}
+          style={{ 
+            width: 340, 
+            height: 200, 
+            borderRadius: 15, 
+            shadowColor: "grey",
+            shadowOffset: { width: 3, height: 3 },
+            shadowOpacity: 0.5,
+            shadowRadius: 5,
+            elevation: 5,
+           }}
+        >
+          <Image
+            style={{
+              width: 340,
+              height: 200,
+              top: 0,
+              left: 0,
+              borderRadius: 15,
+            }}
+            source={{ uri: article.image.replace("http://localhost:3006", "")}}
+            onError={(error) => console.log("Image loading error:", error)}
+          />
+        </TouchableOpacity>        
+
+        <Text style={styles.textImage}>{article.categoryName}</Text>  
+        <Text style={styles.textTitle}>{article.title}</Text> 
+      </View>
+    ))
+  )}
 </View>
+
 
 
     </ScrollView>
@@ -177,7 +259,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     height: 1000,
-    top: -40,
+    top: -20,
     left: 10,
   },
   scrollViewContent: {
@@ -191,6 +273,24 @@ const styles = StyleSheet.create({
     top: 40,
     width: 100,
     backgroundColor: "white",
+    borderRadius: 20,
+    flexDirection: "row",
+    shadowColor: "grey",
+    shadowOffset: { width: 3, height: 3 },
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    elevation: 5,
+    padding: 5,
+    marginBottom: 20,
+    marginHorizontal: 5,
+  },
+
+  selectedCategory: {
+    height: 35,
+    marginTop: 0,
+    top: 40,
+    width: 100,
+    backgroundColor: "#1B3C73",
     borderRadius: 20,
     flexDirection: "row",
     shadowColor: "grey",
@@ -275,6 +375,16 @@ const styles = StyleSheet.create({
     top: 10,
     left: -90,
   },
+
+  selectedTextA :{ 
+    fontFamily: "Montserrat",
+    fontSize: 18,
+    color: "#1B3C73",
+    textAlign: "center",
+    top: 10,
+    left: -100,
+
+  },
   text2: {
     fontFamily: "Montserrat",
     fontSize: 13,
@@ -297,6 +407,16 @@ const styles = StyleSheet.create({
     color: "#1B3C73",
   },
 
+  selectedText: {
+    fontSize: 12,
+    color: "black",
+    fontFamily: "Montserrat",
+    top: 0,
+    alignSelf: "center",
+    left: 20,
+    color: "white",
+  },
+
   Act: {
     position: "absolute",
     top: 220,
@@ -309,14 +429,14 @@ const styles = StyleSheet.create({
   },
   Act2: {
     position: "absolute",
-    top: 140,
+    top: 150,
     marginTop: 10,
     alignContent: "center",
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
     flex: 1,
-  },
+   },
 
   textImage: {
     fontFamily: "Montserrat",
