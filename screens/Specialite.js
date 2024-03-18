@@ -30,12 +30,11 @@ const Specialite = ({ navigation }) => {
     try {
       setRefreshing(true);
       const response = await fetch(
-        "http://192.168.103.71:3004/api/v1/speciality"
+        "http://192.168.40.71:3004/api/v1/speciality"
       );
       const data = await response.json();
       setCategories(data);
-      console.log(data);
-    } catch (error) {
+     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
       setRefreshing(false);

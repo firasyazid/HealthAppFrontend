@@ -34,7 +34,7 @@ const Articlescreen = ({ navigation }) => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          "http://192.168.103.71:3006/api/v1/categories"
+          "http://192.168.40.71:3006/api/v1/categories"
         );
         setCategories(response.data);
       } catch (error) {
@@ -48,11 +48,10 @@ const Articlescreen = ({ navigation }) => {
       try {
             setRefreshing(true);
         const response = await axios.get(
-          "http://192.168.103.71:3006/api/v1/articles"
+          "http://192.168.40.71:3006/api/v1/articles"
         );
         setArticles(response.data);
-        console.log(response.data);
-      } catch (error) {
+       } catch (error) {
         console.error("Error fetching articles:", error);
       } finally {
         setRefreshing(false);
@@ -70,11 +69,10 @@ const Articlescreen = ({ navigation }) => {
       try {
             setRefreshing(true);
         const response = await axios.get(
-          `http://192.168.103.71:3006/api/v1/articles/articlesC/${selectedCategory.id}`
+          `http://192.168.40.71:3006/api/v1/articles/articlesC/${selectedCategory.id}`
         );
         setSelectedArticles(response.data);
-        console.log(response.data);
-       } catch (error) {
+        } catch (error) {
         console.error("Error fetching articles:", error);
       } finally {
         setRefreshing(false);
@@ -95,7 +93,7 @@ const Articlescreen = ({ navigation }) => {
         userId = userId.replace(/"/g, "");
 
         const res = await axios.get(
-          `http://192.168.103.71:3003/api/v1/users/${userId}`
+          `http://192.168.40.71:3003/api/v1/users/${userId}`
         );
 
         const fullName = res.data.fullname;
@@ -167,7 +165,7 @@ const Articlescreen = ({ navigation }) => {
         style={{
           marginBottom: 30,
           marginHorizontal: 5,
-        }}
+         }}
       >
         <TouchableOpacity 
           onPress={() => navigation.navigate("ArticlesDetails", { article })}
@@ -175,12 +173,12 @@ const Articlescreen = ({ navigation }) => {
           style={{ 
             width: 340, 
             height: 200, 
-            borderRadius: 15, 
+            borderRadius: 13, 
             shadowColor: "grey",
             shadowOffset: { width: 3, height: 3 },
             shadowOpacity: 0.5,
             shadowRadius: 5,
-            elevation: 5,
+            elevation: 10,
            }}
         >
           <Image
@@ -189,7 +187,7 @@ const Articlescreen = ({ navigation }) => {
               height: 200,
               top: 0,
               left: 0,
-              borderRadius: 15,
+              borderRadius: 10,
             }}
             source={{ uri: article.image.replace("http://localhost:3006", "")}}
             onError={(error) => console.log("Image loading error:", error)}

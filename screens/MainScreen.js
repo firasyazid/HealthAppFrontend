@@ -299,7 +299,7 @@ const submitForm2 = async () => {
       password: newuserInfo.pwd,
     };
 
-    const backendURL = "http://192.168.103.71:3003/api/v1/users/register";
+    const backendURL = "http://192.168.40.71:3003/api/v1/users/register";
     const response = await fetch(backendURL, {
       method: "POST",
       headers: {
@@ -314,8 +314,7 @@ const submitForm2 = async () => {
     showToast("success", "⚡️ Bienvenue !");
 
     const responseData = await response.json();
-    console.log(responseData);
-  } catch (error) {
+   } catch (error) {
     showToast("error", "⚠️ Veuillez vérifier vos informations");
     console.error(error);
   } finally {

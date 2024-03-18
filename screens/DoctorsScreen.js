@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import SelectDropdown from "react-native-select-dropdown";
+import * as Location from 'expo-location';
 
 const DoctorsScreen = ({ navigation, route }) => {
   const [regions, setRegions] = useState([]);
@@ -16,25 +17,71 @@ const DoctorsScreen = ({ navigation, route }) => {
   const [doctors, setDoctors] = useState([]);
   const [selectedValue, setSelectedValue] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [location, setLocation] = useState(null);
+  const [userRegion, setUserRegion] = useState(null);
 
 
   const { category } = route.params;
   const idc = category.id;
   console.log(idc);
 
+
+  ///
+
+
+  useEffect(() => {
+    const getPermissions = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log("Please grant location permissions");
+        return;
+      }
+      let currentLocation = await Location.getCurrentPositionAsync({});
+      setLocation(currentLocation);
+      console.log(currentLocation); 
+     };
+    getPermissions();
+  }, []);
+
+  const reverseGeocode = async () => {
+    const reverseGeocodedAddress = await Location.reverseGeocodeAsync({
+      longitude: location.coords.longitude,
+      latitude: location.coords.latitude
+    });
+  
+    if (reverseGeocodedAddress.length > 0) {
+      const region = reverseGeocodedAddress[0].region;  
+      console.log(reverseGeocodedAddress);
+      setUserRegion(region);
+     }
+  };
+  
+  useEffect(() => {
+    if (location) {
+      reverseGeocode();
+    }
+  }, [location]);
+
+
+
+
+
+
+
+
+
   const fetchDoctors = async () => {
     try {
       setRefreshing(true);
       const response = await fetch(
-        `http://192.168.103.71:3004/api/v1/medecin/by-category/${idc}`
+        `http://192.168.40.71:3004/api/v1/medecin/by-category/${idc}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
       setDoctors(data);
-      console.log(data);
-    } catch (error) {
+     } catch (error) {
       console.error("Error fetching doctors:", error);
     } finally {
       setRefreshing(false);
@@ -48,7 +95,7 @@ const DoctorsScreen = ({ navigation, route }) => {
   const fetchRegions = async () => {
     try {
       const response = await fetch(
-        "http://192.168.103.71:3004/api/v1/region/"
+        "http://192.168.40.71:3004/api/v1/region/"
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -127,6 +174,7 @@ const DoctorsScreen = ({ navigation, route }) => {
   rowStyle={styles.dropdownRow}
   rowTextStyle={styles.dropdownText}
   defaultButtonText="Choisir Région"
+  defaultValue={userRegion}
 />
 
         <Image
@@ -212,7 +260,7 @@ const DoctorsScreen = ({ navigation, route }) => {
         <Text
           style={{
             fontFamily: "Poppins",
-            fontSize: 16,
+            fontSize: 14,
             color: "#1B3C73",
             textAlign: "center",
             top: -90,
@@ -225,7 +273,7 @@ const DoctorsScreen = ({ navigation, route }) => {
         <Text
           style={{
             fontFamily: "Poppins",
-            fontSize: 12,
+            fontSize: 10,
             color: "#1B3C73",
             textAlign: "center",
             top: -90,
@@ -280,9 +328,10 @@ const DoctorsScreen = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
   scrollViewContent2: {
-    height: "120%",
+    height: "130%",
     width: "100%",
     backgroundColor: "white",
+  
   },
   container2: {
     flex: 1,
