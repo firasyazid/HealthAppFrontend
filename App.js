@@ -15,6 +15,7 @@ import DoctorsScreen from "./screens/DoctorsScreen";
 import DoctorDetails from "./screens/DoctorDetails";
 import Articlescreen from "./screens/Articlescreen";
 import ArticlesDetails from "./screens/ArticlesDetails";
+import PharmacyScreen from "./screens/PharmacyScreen";
 
 
 
@@ -51,6 +52,7 @@ const App = () => {
         <Stack.Screen name="DoctorDetails" component={DoctorDetails} />
         <Stack.Screen name="Articlescreen" component={Articlescreen} />
         <Stack.Screen name="ArticlesDetails" component={ArticlesDetails} />
+        <Stack.Screen name="PharmacyScreen" component={PharmacyScreen} />
 
 
        </Stack.Navigator>

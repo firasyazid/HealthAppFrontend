@@ -20,7 +20,7 @@ const HomeScreen = ({ navigation }) => {
       setRefreshing(true);
 
       const response = await fetch(
-        "http://192.168.40.71:3004/api/v1/speciality"
+        "http://192.168.233.71:3004/api/v1/speciality"
       );
       const data = await response.json();
       setCategories(data);
@@ -89,7 +89,11 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.texté}>Médecin</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.touch2}>
+        <TouchableOpacity style={styles.touch2}  
+        
+        
+            onPress={() => navigation.navigate("PharmacyScreen")}
+        >
           <Image
             source={require("../assets/medicaments.png")}
             style={styles.im1}

@@ -20,7 +20,6 @@ const DoctorsScreen = ({ navigation, route }) => {
   const [location, setLocation] = useState(null);
   const [userRegion, setUserRegion] = useState(null);
 
-
   const { category } = route.params;
   const idc = category.id;
   console.log(idc);
@@ -74,7 +73,7 @@ const DoctorsScreen = ({ navigation, route }) => {
     try {
       setRefreshing(true);
       const response = await fetch(
-        `http://192.168.40.71:3004/api/v1/medecin/by-category/${idc}`
+        `http://192.168.233.71:3004/api/v1/medecin/by-category/${idc}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -95,7 +94,7 @@ const DoctorsScreen = ({ navigation, route }) => {
   const fetchRegions = async () => {
     try {
       const response = await fetch(
-        "http://192.168.40.71:3004/api/v1/region/"
+        "http://192.168.233.71:3004/api/v1/region/"
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
