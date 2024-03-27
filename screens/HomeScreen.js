@@ -20,7 +20,7 @@ const HomeScreen = ({ navigation }) => {
       setRefreshing(true);
 
       const response = await fetch(
-        "http://192.168.233.71:3004/api/v1/speciality"
+        "http://192.168.1.16:3004/api/v1/speciality"
       );
       const data = await response.json();
       setCategories(data);

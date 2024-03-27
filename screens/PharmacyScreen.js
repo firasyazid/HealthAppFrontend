@@ -6,11 +6,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  RefreshControl,
+  RefreshControl,FlatList
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import SelectDropdown from "react-native-select-dropdown";
 import * as Location from "expo-location";
+import { FontAwesome } from '@expo/vector-icons';
 
 const PharmacyScreen = ({ navigation }) => {
   const [regions, setRegions] = useState([]);
@@ -22,7 +23,7 @@ const PharmacyScreen = ({ navigation }) => {
   const fetchRegions = async () => {
     try {
       const response = await fetch(
-        "http://192.168.233.71:3007/api/v1/RegionPharmacy"
+        "http://192.168.1.16:3007/api/v1/RegionPharmacy"
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -42,7 +43,7 @@ const PharmacyScreen = ({ navigation }) => {
 
   const fetchtypes = async () => {
     try {
-      const response = await fetch("http://192.168.233.71:3007/api/v1/type");
+      const response = await fetch("http://192.168.1.16:3007/api/v1/type");
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -61,15 +62,12 @@ const PharmacyScreen = ({ navigation }) => {
   /////
   const fetchpharmacies = async () => {
     try {
-      const response = await fetch(
-        "http://192.168.233.71:3007/api/v1/pharmacy"
-      );
+      const response = await fetch("http://192.168.1.16:3007/api/v1/pharmacy");
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
       setPharmacies(data);
-      console.log(data, "datazzzz");
     } catch (error) {
       console.error("Error fetching regions:", error);
     }
@@ -80,7 +78,7 @@ const PharmacyScreen = ({ navigation }) => {
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollViewContent2}>
+    <View style={styles.scrollViewContent2}>
       <View style={styles.container2}>
         <SafeAreaView>
           <TouchableOpacity onPress={() => navigation.navigate("Home")}>
@@ -89,8 +87,20 @@ const PharmacyScreen = ({ navigation }) => {
               style={{ width: 55, height: 55, left: 20, marginTop: 20 }}
             />
           </TouchableOpacity>
+          <View 
+              style={{
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
+                top: 100,
+                position: "absolute",
+                left  : 80
+              }}
+              >
           <Text style={styles.text}>Votre pharmacie, </Text>
           <Text style={styles.text}>la plus proche </Text>
+
+          </View>
 
           <TouchableOpacity
             onPress={() => navigation.navigate("MainScreen")}
@@ -161,66 +171,95 @@ const PharmacyScreen = ({ navigation }) => {
         </View>
       </View>
 
-<View style={{flexDirection: "row", justifyContent: "center", alignItems: "center", top: 250,
- alignSelf: "center",
- position: "absolute", marginTop:20}}>
-      <View
-         style={{
-           alignItems: "center",
+      <View 
+        style={{
           justifyContent: "center",
-          borderColor: "#D8DFE0",
-          borderWidth: 0.5,
-          borderRadius: 15,
-          height: 140,
-          backgroundColor: "white",
-          width: 310,
-          marginVertical: 10,  
-          shadowColor: "#D8DFE0",
-          shadowOffset: { width:4, height: 4},
-          shadowOpacity: 2.5,
-          shadowRadius: 5,
-          elevation: 5,
-          paddingHorizontal: 10,
+          alignContent: "center",
+          alignItems: "center",
+             top: 250,
+             left: 10,
          }}
       >
-
-
-            <Text style={{fontSize: 15, fontFamily: "Montserrat", color: "#1B3C73", top: 13, left: 20, position:'absolute'}}
-            >Pharmacie de la Gare</Text>
+      <FlatList
+      data={pharmacies}
+      keyExtractor={(item) => item.id}
+      showsVerticalScrollIndicator={false}
+ 
+      renderItem={({ item }) => (
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+             alignSelf: "center",
+             marginTop: 20,
+             marginBottom: 10,
+          }}
+        >
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              borderColor: "#D8DFE0",
+              borderWidth: 0.5,
+              borderRadius: 15,
+              height: 140,
+              backgroundColor: "white",
+              width: 310,
+              marginVertical: 10,
+              shadowColor: "#D8DFE0",
+              shadowOffset: { width: 4, height: 4 },
+              shadowOpacity: 2.5,
+              shadowRadius: 5,
+              elevation: 5,
+              paddingHorizontal: 10,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 15,
+                fontFamily: "Montserrat",
+                color: "#1B3C73",
+                top: 13,
+                left: 20,
+                position: "absolute",
+              }}
+            >
+              {item.name}
+            </Text>
             <Image
-            source={require("../assets/location.png")}
-            style={{ width: 25, height: 25, top: 40, left: 20, position:'absolute'}}
+              source={require("../assets/location.png")}
+              style={{
+                width: 25,
+                height: 25,
+                top: 50,
+                left: 20,
+                position: "absolute",
+              }}
             />
-            <Text style={{fontSize: 12, fontFamily: "Montserrat", color: "#6c757d", top: 45, left: 50, position:'absolute'}}
-            > 12 Rue de la Gare</Text>
-            <TouchableOpacity>
-            <Image
-            source={require("../assets/location.png")}
-            style={{ width: 25, height: 25, top: 5, left: -135, position:'absolute'}}
-            />
-            <Text style={{fontSize: 12, fontFamily: "Montserrat", color: "#6c757d", top: 10, left: -100, position:'absolute'}}
-            > 71 123 456</Text>
-                        </TouchableOpacity>
-
-
+            <Text
+              style={{
+                fontSize: 12,
+                fontFamily: "Montserrat",
+                color: "black",
+                top: 55,
+                left: 50,
+                position: "absolute",
+              }}
+            >
+              {item.address}
+            </Text>
+          </View>
         </View>
+      )}
+      ListFooterComponent={<View style={{ height: 50 }} />} // Add some space at the bottom
 
-        </View>
+    />
 
+      </View>
 
-
-
-
-
-
-
-
-
-
-
-
-
-    </ScrollView>
+     
+    </View>
   );
 };
 
@@ -232,13 +271,13 @@ const styles = StyleSheet.create({
   container2: {
     flex: 1,
     backgroundColor: "white",
-  },
+   },
 
   btnpower: {
     alignItems: "center",
     zIndex: 1,
     left: 360,
-    top: -130,
+    top: 20,
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -257,7 +296,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#1B3C73",
     textAlign: "center",
-    top: 25,
+    top: -10,
     left: -60,
   },
 

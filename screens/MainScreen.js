@@ -299,7 +299,7 @@ const submitForm2 = async () => {
       password: newuserInfo.pwd,
     };
 
-    const backendURL = "http://192.168.233.71:3003/api/v1/users/register";
+    const backendURL = "http://192.168.1.16:3003/api/v1/users/register";
     const response = await fetch(backendURL, {
       method: "POST",
       headers: {

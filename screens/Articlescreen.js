@@ -34,7 +34,7 @@ const Articlescreen = ({ navigation }) => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          "http://192.168.233.71:3006/api/v1/categories"
+          "http://192.168.1.16:3006/api/v1/categories"
         );
         setCategories(response.data);
       } catch (error) {
@@ -48,7 +48,7 @@ const Articlescreen = ({ navigation }) => {
       try {
             setRefreshing(true);
         const response = await axios.get(
-          "http://192.168.233.71:3006/api/v1/articles"
+          "http://192.168.1.16:3006/api/v1/articles"
         );
         setArticles(response.data);
        } catch (error) {
@@ -69,7 +69,7 @@ const Articlescreen = ({ navigation }) => {
       try {
             setRefreshing(true);
         const response = await axios.get(
-          `http://192.168.233.71:3006/api/v1/articles/articlesC/${selectedCategory.id}`
+          `http://192.168.1.16:3006/api/v1/articles/articlesC/${selectedCategory.id}`
         );
         setSelectedArticles(response.data);
         } catch (error) {
@@ -93,7 +93,7 @@ const Articlescreen = ({ navigation }) => {
         userId = userId.replace(/"/g, "");
 
         const res = await axios.get(
-          `http://192.168.233.71:3003/api/v1/users/${userId}`
+          `http://192.168.1.16:3003/api/v1/users/${userId}`
         );
 
         const fullName = res.data.fullname;

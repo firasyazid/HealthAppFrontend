@@ -33,7 +33,7 @@ const Forgetpwd = ({navigation}) => {
                 email: email,
             };
     
-            const backendURL = "http://192.168.233.71:3003/api/v1/users/forgot-password";
+            const backendURL = "http://192.168.1.16:3003/api/v1/users/forgot-password";
             const response = await fetch(backendURL, {
                 method: "POST",
                 headers: {

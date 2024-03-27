@@ -118,7 +118,7 @@ const DoctorDetails = ({ navigation, route }) => {
           hours: selectedTime  
         }
       };
-      const response = await axios.post('http://192.168.233.71:3005/api/v1/appointement', appointmentData);
+      const response = await axios.post('http://192.168.1.16:3005/api/v1/appointement', appointmentData);
       console.log('Appointment saved:', response.data);
       showToast("success", "✔️ Rendez-vous enregistré!");  
       } catch (error) {
